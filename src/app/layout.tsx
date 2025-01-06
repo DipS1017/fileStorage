@@ -6,10 +6,11 @@ import {
   SignInButton,
   SignedIn,
   SignedOut,
+  UserButton,
 } from "@clerk/nextjs";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/ui/app-sidebar";
 import { items } from "@/constants/menuList";
+import { AppSidebar } from "@/components/app-sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,17 +36,21 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased  `}
         >
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
           <SidebarProvider>
-            <AppSidebar items={items} />
-            <SidebarTrigger />
+            <AppSidebar />
 
-            <SignedOut>
-              <SignInButton />
-            </SignedOut>
-            <SignedIn />
-            {children}
+            <main>
+              <SidebarTrigger />
+              {children}
+            </main>
           </SidebarProvider>
         </body>
       </html>
