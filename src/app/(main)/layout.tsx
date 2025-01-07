@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
-import { AppSidebar } from "@/components/ui/app-sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 import {
   Sidebar,
   SidebarProvider,
@@ -20,13 +20,11 @@ export default function MainLayout({
       disableTransitionOnChange
     >
       <SidebarProvider>
-        <div className="flex h-screen">
-          <AppSidebar />
-          <main className="bg-red-500 flex-1 ">
-            <SidebarTrigger />
-            {children}
-          </main>
-        </div>
+        <AppSidebar />
+        <main className="bg-red-500 flex-1 ">
+          <SidebarTrigger />
+          {children}
+        </main>
       </SidebarProvider>
     </ThemeProvider>
   );
