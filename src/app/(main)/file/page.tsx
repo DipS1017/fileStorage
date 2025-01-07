@@ -1,7 +1,7 @@
 import React from "react";
 
 const FilesPage = () => {
-  return <div className="mx-auto">files</div>;
+  return <div>files</div>;
 };
 
 export default FilesPage;

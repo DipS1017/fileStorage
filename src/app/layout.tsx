@@ -11,6 +11,8 @@ import {
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarTriggerWrapper } from "@/components/sidebar-trigger-wrapper";
+import { Navbar } from "@/components/navbar";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,18 +40,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased  `}
         >
-          <SignedOut>
-            <SignInButton />
-          </SignedOut>
-          <SignedIn></SignedIn>
-          <SidebarProvider>
-            <AppSidebar />
-
-            <main className="flex-1 relative">
-              <SidebarTriggerWrapper />
-              {children}
-            </main>
-          </SidebarProvider>
+          <main>{children}</main>
         </body>
       </html>
     </ClerkProvider>
