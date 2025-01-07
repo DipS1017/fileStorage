@@ -21,8 +21,8 @@ export default function MainLayout({
     >
       <SidebarProvider>
         <AppSidebar />
-        <main className="bg-red-500 flex-1 ">
-          <SidebarTrigger />
+        <main className=" flex-1 ">
+          <Navbar />
           {children}
         </main>
       </SidebarProvider>
