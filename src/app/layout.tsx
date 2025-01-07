@@ -9,8 +9,8 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { items } from "@/constants/menuList";
 import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarTriggerWrapper } from "@/components/sidebar-trigger-wrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,14 +41,12 @@ export default function RootLayout({
           <SignedOut>
             <SignInButton />
           </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
+          <SignedIn></SignedIn>
           <SidebarProvider>
             <AppSidebar />
 
-            <main>
-              <SidebarTrigger />
+            <main className="flex-1 relative">
+              <SidebarTriggerWrapper />
               {children}
             </main>
           </SidebarProvider>

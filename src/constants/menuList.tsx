@@ -1,20 +1,24 @@
 import {
-  Calendar,
-  Home,
-  Inbox,
   FileInputIcon,
-  TrashIcon,
   StarIcon,
+  TrashIcon,
   LucideIcon,
+  LayoutDashboard,
 } from "lucide-react";
 
-// Menu items.
 export interface sidebarItem {
   title: string;
   icon: LucideIcon;
   url: string;
 }
-export const items: sidebarItem[] = [
+export const platformItem: sidebarItem[] = [
+  {
+    title: "Dashboard",
+    url: "/",
+    icon: LayoutDashboard,
+  },
+];
+export const applicationItem: sidebarItem[] = [
   {
     title: "Files",
     url: "/file",
