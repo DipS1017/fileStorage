@@ -10,7 +10,7 @@ const DashboardPage = () => {
           <div className="flex flex-col space-y-4">
             <h2 className="text-2xl font-bold">Welcome to your Dashboard</h2>
             <div className="flex space-x-4">
-              <Button>Create Project</Button>
+              <Button>Add File</Button>
               <Button variant="outline">View Reports</Button>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
