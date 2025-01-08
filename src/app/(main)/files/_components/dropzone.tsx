@@ -5,7 +5,7 @@ import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Thumbnail from "./Thumbnail";
 import { convertFileToUrl } from "../../utils";
-import { Upload } from "lucide-react";
+import { Minus, Upload } from "lucide-react";
 
 interface FileUploaderProps {
   ownerId: string;
@@ -25,6 +25,13 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   className = "",
 }) => {
   const [files, setFiles] = useState<File[]>([]);
+  const handleRemoveFile = (e: React.MouseEvent, file: File) => {
+    e.stopPropagation();
+    setFiles((prevFiles) =>
+      prevFiles.filter((file) => file.name !== file.name)
+    );
+    console.log("Remove file", file);
+  };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
@@ -44,7 +51,6 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
           {files.map((file, index) => {
             const { type, extension } = getFileType(file.name);
             const fileUrl = convertFileToUrl(file);
-
             return (
               <li
                 key={`${file.name}-${index}`}
@@ -53,7 +59,19 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                 <div className="flex items-center gap-2">
                   <Thumbnail type={type} extension={extension} url={fileUrl} />
                   <p>{file.name}</p>
+                  <button
+                    type="button"
+                    onClick={(e) => handleRemoveFile(e, file)}
+                  >
+                    {" "}
+                    <Minus
+                      size={24}
+                      color={"white"}
+                      className="bg-red-500 rounded-sm"
+                    />
+                  </button>
                 </div>
+                <div>Loading</div>
               </li>
             );
           })}
@@ -63,7 +81,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
       {isDragActive ? (
         <p>Drop the files here...</p>
       ) : (
-        <p>Drag 'n' drop some files here, or click to select files</p>
+        <p>Drag and drop some files here, or click button to select files</p>
       )}
     </div>
   );

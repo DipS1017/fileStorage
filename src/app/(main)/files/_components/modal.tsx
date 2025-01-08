@@ -19,7 +19,7 @@ export const Modal = () => {
         <DialogHeader>
           <DialogTitle>Upload Files</DialogTitle>
           <DialogDescription>
-            Drag and drop files or click the drop area to upload.
+            Drag and drop files or click the upload button to upload.
           </DialogDescription>
         </DialogHeader>
         <FileUploader />
