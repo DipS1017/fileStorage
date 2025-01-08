@@ -25,19 +25,19 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   className = "",
 }) => {
   const [files, setFiles] = useState<File[]>([]);
-  const handleRemoveFile = (e: React.MouseEvent, file: File) => {
-    e.stopPropagation();
-    setFiles((prevFiles) =>
-      prevFiles.filter((file) => file.name !== file.name)
-    );
-    console.log("Remove file", file);
-  };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const handleRemoveFile = (e: React.MouseEvent, fileToRemove: File) => {
+    e.stopPropagation();
+    setFiles((prevFiles) =>
+      prevFiles.filter((file) => file.name !== fileToRemove.name)
+    );
+    console.log(fileToRemove);
+  };
 
   return (
     <div {...getRootProps()} className={`cursor-pointer ${className}`}>
