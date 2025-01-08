@@ -47,6 +47,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
       </Button>
       {files.length > 0 && (
         <ul className="uploader-preview-list">
+          {" "}
           <h4 className="h4 text-light-100">Uploading</h4>
           {files.map((file, index) => {
             const { type, extension } = getFileType(file.name);
@@ -71,7 +72,6 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                     />
                   </button>
                 </div>
-                <div>Loading</div>
               </li>
             );
           })}
