@@ -7,12 +7,6 @@ import Thumbnail from "./Thumbnail";
 import { convertFileToUrl } from "../../utils";
 import { Minus, Upload } from "lucide-react";
 
-interface FileUploaderProps {
-  ownerId: string;
-  accountId: string;
-  className?: string;
-}
-
 const getFileType = (filename: string) => {
   const extension = filename.split(".").pop() || "";
   const type = extension.match(/jpg|jpeg|png|gif/) ? "Image" : "File";

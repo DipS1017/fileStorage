@@ -1,13 +1,6 @@
 import React from "react";
 import { getFileIcon } from "../../utils";
 import { cn } from "@/lib/utils";
-interface ThumbnailProps {
-  type: string;
-  extension: string;
-  url?: string;
-  imageClassName?: string;
-  className?: string;
-}
 
 const Thumbnail = ({
   type,
