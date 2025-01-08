@@ -15,7 +15,7 @@ export const POST = async (req: Request) => {
     const filename = file.name.replace(/\s+/g, "_"); // Replace spaces with underscores.
     console.log(`Uploading file: ${filename}`);
 
-    const uploadPath = path.join(process.cwd(), "public", "assets", filename);
+    const uploadPath = path.join(process.cwd(), "public", "uploads", filename);
 
     await writeFile(uploadPath, buffer);
 
