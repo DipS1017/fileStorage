@@ -1,27 +1,23 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Thumbnail from "./Thumbnail";
 import { convertFileToUrl } from "../../utils";
 import { Minus, Upload } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import {useMutation} from "@tanstack/react-query"
+import axios from "axios";
 
 // Helper function to upload files to the server
 const uploadFiles = async (files: File[]) => {
   const formData = new FormData();
-  files.forEach((file) => {
-    formData.append("file", file);
-  });
+  files.forEach((file) => formData.append("file", file));
+  const response = await axios.post("/api/uploads/post", formData);
 
-  const response = await fetch("/api/uploads/post", {
-    method: "POST",
-    body: formData,
-  });
-
-  if (!response.ok) {
+  if (!response.data) {
     throw new Error("Failed to upload files");
   }
-  return response.json(); // This returns the uploaded data or success info
+  return response.data;
 };
 
 const getFileType = (filename: string) => {
@@ -36,17 +32,6 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   className = "",
 }) => {
   const [files, setFiles] = useState<File[]>([]);
-  const { mutate, isLoading, isError, isSuccess, error } = useMutation(
-    uploadFiles,
-    {
-      onSuccess: () => {
-        console.log("Files uploaded successfully.");
-      },
-      onError: (error: any) => {
-        console.error("Error uploading files:", error.message);
-      },
-    }
-  );
 
   // Callback to handle file drop
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -57,7 +42,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   const handleRemoveFile = (e: React.MouseEvent, fileToRemove: File) => {
     e.stopPropagation();
     setFiles((prevFiles) =>
-      prevFiles.filter((file) => file.name !== fileToRemove.name)
+      prevFiles.filter((file) => file.name !== fileToRemove.name),
     );
   };
 
@@ -69,10 +54,11 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
       console.log("No files to upload.");
       return;
     }
+    mutation.mutate(files);
 
-    // Call the mutate function to upload the files
-    mutate(files); // This triggers the uploadFiles function to be called
   };
+
+ 
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -110,7 +96,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                       <Minus
                         size={24}
                         color={"white"}
-                        className="bg-red-500 rounded-sm"
+                        className="bg-red-500 rounded-sm "
                       />
                     </button>
                   </div>
@@ -127,13 +113,9 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
         )}
       </div>
 
-      <Button type="submit" className="mt-4" disabled={isLoading}>
-        {isLoading ? "Uploading..." : "Submit"}
-      </Button>
+      <Button type="submit" className="mt-4"></Button>
 
-      {/* Error or Success Messages */}
-      {isError && <p className="text-red-500">Error: {error?.message}</p>}
-      {isSuccess && <p className="text-green-500">Upload Successful!</p>}
+   
     </form>
   );
 };
