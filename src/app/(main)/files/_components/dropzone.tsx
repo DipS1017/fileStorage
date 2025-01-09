@@ -11,14 +11,13 @@ import axios from "axios";
 const uploadFiles = async (files: File[]) => {
   const formData = new FormData();
   files.forEach((file) => {
-    formData.append("file", file);
+    formData.append("file[]", file);
   });
 
-  const response = await axios.post("/api/uploads/post", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const response = await axios.post("/api/uploads/post", formData,{
+    headers: {"content-type": "multipart/form-data"},
+  }
+  );
 
   if (!response.data) {
     throw new Error("Failed to upload files");
@@ -74,6 +73,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
       const response = await uploadFiles(files);
       console.log("Files uploaded successfully:", response);
       setSuccessMessage("Files uploaded successfully!");
+      setFiles([]);
     } catch (err: any) {
       console.error("Error uploading files:", err.message);
       setError("Error uploading files: " + err.message);
