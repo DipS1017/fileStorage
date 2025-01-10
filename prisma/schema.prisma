@@ -14,34 +14,35 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectId
-  email     String   @unique // Email is unique
-  name      String?  // Optional name field
-  password  String?  // Optional password field (for authentication)
-  createdAt DateTime @default(now()) // Automatically set the current timestamp
-  updatedAt DateTime @updatedAt // Automatically updated when user is modified
-  files     File[]   // Relationship with File model (one-to-many)
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  clerkId     String?     @unique
+  email       String      @unique
+  name        String?
+  lastName    String?
+  userType    String      @default("free")
+  createdAt   DateTime    @default(now()) // Automatically set the current timestamp
+  updatedAt   DateTime    @updatedAt // Automatically updated when user is modified
+  files       File[] // Relationship with File model (one-to-many)
   sharedFiles FileShare[] // Relationship with FileShare model (one-to-many)
 }
 
 model File {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectId
-  ownerId   String
-  owner     User     @relation(fields: [ownerId], references: [id]) // Foreign key to User
-  fileName  String   // File name
-  filePath  String   // Path to the file in the storage
-  fileSize  Int?     // Optional file size
-  uploadedAt DateTime @default(now()) // Timestamp when the file was uploaded
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectId
+  ownerId    String
+  owner      User        @relation(fields: [ownerId], references: [id]) // Foreign key to User
+  fileName   String // File name
+  filePath   String // Path to the file in the storage
+  fileSize   Int? // Optional file size
+  uploadedAt DateTime    @default(now()) // Timestamp when the file was uploaded
   sharedWith FileShare[] // Relationship with FileShare model
 }
 
 model FileShare {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectId
-  fileId      String
-  file        File     @relation(fields: [fileId], references: [id]) // Foreign key to File
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectId
+  fileId       String
+  file         File     @relation(fields: [fileId], references: [id]) // Foreign key to File
   sharedWithId String
-  sharedWith  User     @relation(fields: [sharedWithId], references: [id]) // Foreign key to User
-  permissions String   @default("view") // Permissions for the shared file (e.g., "view", "edit")
-  sharedAt    DateTime @default(now()) // Timestamp when the file was shared
+  sharedWith   User     @relation(fields: [sharedWithId], references: [id]) // Foreign key to User
+  permissions  String   @default("view") // Permissions for the shared file (e.g., "view", "edit")
+  sharedAt     DateTime @default(now()) // Timestamp when the file was shared
 }
-
