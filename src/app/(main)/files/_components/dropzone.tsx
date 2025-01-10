@@ -80,6 +80,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
     } finally {
       setIsLoading(false);
     }
+    
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
