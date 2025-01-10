@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { currentUser, auth } from '@clerk/nextjs/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 
-const prisma = new PrismaClient();
 
 export async function GET() {
   const { userId } = auth();
@@ -17,7 +16,7 @@ export async function GET() {
   }
 
   let dbUser = await prisma.user.findUnique({
-    where: { clerkId: user.id },
+    where: { clerkId: userId },
   });
 
   if (!dbUser) {
@@ -35,7 +34,7 @@ export async function GET() {
     return new NextResponse(null, {
       status: 302, // 302 Found - temporary redirect
       headers: {
-        Location: 'https://go.bradi.tech/api/auth/new-user',
+        Location: '/signup',
       },
     });
   }
@@ -44,7 +43,7 @@ export async function GET() {
   return new NextResponse(null, {
     status: 302, // 302 Found - temporary redirect
     headers: {
-      Location: 'https://go.bradi.tech/dashboard',
+      Location: '/dashboard',
     },
   });
 
