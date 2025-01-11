@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
-export default function Home() {
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-100 to-white">
-      <nav className="py-4 px-6 flex justify-between items-center bg-white shadow-sm">
-        <div className="flex items-center space-x-4">
-          <svg
+/* <svg
             className="w-8 h-8 text-indigo-600"
             fill="none"
             stroke="currentColor"
@@ -19,8 +13,14 @@ export default function Home() {
               strokeWidth={2}
               d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
             />
-          </svg>
-          <span className="text-xl font-bold text-gray-800">FileStorage</span>
+          </svg> */
+
+export default function Home() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-indigo-100 to-white">
+      <nav className="py-4 px-6 flex justify-between items-center bg-white shadow-sm">
+        <div className="flex items-center space-x-4">
+                    <span className="text-3xl pl-2 font-semibold text-gray-800">FileStorage</span>
         </div>
         <div className="space-x-4">
           <Button variant="outline">

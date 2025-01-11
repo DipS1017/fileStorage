@@ -63,7 +63,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" variant="sidebar" {...props}>
       <SidebarHeader>
-        <SidebarGroupLabel className="text-3xl text-primary font-bold py-10">
+
+        <SidebarGroupLabel className="text-4xl text-primary font-semibold pt-10 pb-4">
+
           FileStorage
         </SidebarGroupLabel>
       </SidebarHeader>
