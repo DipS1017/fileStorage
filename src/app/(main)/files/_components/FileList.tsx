@@ -1,6 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import {FileCard}from "../_components/FileCard"
+
 
 const FileList = () => {
 
@@ -12,7 +14,7 @@ const FileList = () => {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await fetch('/api/files')
+        const response = await fetch('/api/file/get')
 
         if (!response.ok) {
           throw new Error('Error fetching files')
