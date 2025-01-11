@@ -1,9 +1,12 @@
 import React from "react";
+import TrashList from "./_components/TrashList";
 
 const trashPage = () => {
   return (
     <>
-      <div className="flex justify-center ">trash</div>
+      <div className="min-h-screen">
+        <TrashList/>
+      </div>
     </>
   );
 };

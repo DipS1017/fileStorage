@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import {FileCard} from "@/./components/FileCard"
 
 
-const FileList = () => {
+const TrashList = () => {
 
 
   const [files, setFiles] = useState<File[]>([])
@@ -47,5 +47,5 @@ const FileList = () => {
   )
 }
 
-export default FileList
+export default TrashList 
 
