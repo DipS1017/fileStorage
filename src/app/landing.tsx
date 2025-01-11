@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
+import Image from 'next/image'
 const Landing=()=> {
   const { user } = useUser();
   return (
-    <div className="min-h-screen bg-secondary">
+    <div className="min-h-screen bg-gradient-to-b from-secondary to-indigo-200">
     <nav className="py-6 px-6 flex justify-between items-center bg-slate-50 shadow-md">
         <div className="flex items-center space-x-4">
           <span className="text-3xl pl-2 font-semibold text-primary">
@@ -43,6 +44,10 @@ const Landing=()=> {
         <Button size="lg" className="text-lg px-8 py-4">
           Get Started
         </Button>
+        <div className="flex justify-center py-6">
+        <Image
+          src="/1.png" width={1200} height={800} alt="File storage" />
+          </div>
       </main>
     </div>
   );
