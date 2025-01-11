@@ -4,7 +4,7 @@ import { FileCard } from "./_components/FileCard";
 
 const FilesPage = () => {
 
-const fakeFiles = [
+/* const fakeFiles = [
   {
     id: "file_1",
     ownerId: "user_2rFWnFcRkniubGB20FrBuBRaG03",
@@ -45,13 +45,11 @@ const fakeFiles = [
     fileSize: 145738, // in bytes
     uploadedAt: new Date('2025-01-09T12:10:45.550Z'),
   }
-];
+]; */
   return (
     <div className="min-h-screen ">
       <Modal />
-      {fakeFiles.map((file) => (
-        <FileCard key={file.id} file={file} />
-      ))}
+        <FileCard/>
 
     </div>
   );

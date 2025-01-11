@@ -1,7 +1,6 @@
-
 import { File } from '@/types/file'
 import { formatDistanceToNow } from 'date-fns'
-import {  MoreVerticalIcon } from 'lucide-react'
+import { MoreVerticalIcon } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
@@ -65,4 +64,5 @@ export function FileCard({ file }: FileCardProps) {
     </Card>
   )
 }
+
 
