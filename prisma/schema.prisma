@@ -35,9 +35,17 @@ model File {
   fileSize   Int? // Optional file size
   uploadedAt DateTime    @default(now()) // Timestamp when the file was uploaded
   sharedWith FileShare[] // Relationship with FileShare model
+  isDeleted   Boolean  @default(false) 
+ deletedFiles  DeletedFile[] @relation("FileToDeletedFile")
 }
 
-model FileShare {
+model DeletedFile {
+  id          String   @id @default(uuid()) @map("_id") @db.ObjectId 
+  fileId      String   @unique
+  file        File     @relation(fields: [fileId], references: [id], name: "FileToDeletedFile")
+  deletedAt   DateTime @default(now())
+  userId      String
+}model FileShare {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectId
   fileId       String
   file         File     @relation(fields: [fileId], references: [id]) // Foreign key to File

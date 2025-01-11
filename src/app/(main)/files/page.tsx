@@ -5,11 +5,16 @@ import  FileList from "./_components/FileList";
 const FilesPage = () => {
 
   return (
-    <div className="min-h-screen ">
-      <Modal />
-        <FileList/>
+    <>
+    <div className="min-h-screen p-1 ">
+        <div className="flex justify-between">
+          <Modal />
+          <Modal />
+        </div>
 
+        <FileList/>
     </div>
+    </>
   );
 };
 

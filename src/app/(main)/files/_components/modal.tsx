@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +14,7 @@ export const Modal = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Add File</Button>
+        <Button><PlusIcon/> Add File</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
