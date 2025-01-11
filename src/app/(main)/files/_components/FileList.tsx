@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import {FileCard} from "@/./components/FileCard"
+import {Loader} from "@/./components/element/loader"
 
 
 const FileList = () => {
@@ -34,7 +35,7 @@ const [isGrid, setIsGrid] = useState(false);
     fetchFiles()
   }, [])
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <Loader/> 
   if (error) return <div>{error}</div>
 
   return (

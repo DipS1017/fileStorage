@@ -9,7 +9,6 @@ export function Navbar() {
         <div className="flex items-center">
           <div className="flex items-center space-x-2">
             <SidebarTrigger />
-            <span className="font-bold">Dashboard</span>
           </div>
         </div>
         <div className="flex items-center space-x-4">

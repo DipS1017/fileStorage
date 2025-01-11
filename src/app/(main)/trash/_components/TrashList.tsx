@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import {FileCard} from "@/./components/FileCard"
+import {Loader} from "@/./components/element/loader"
 
 
 const TrashList = () => {
@@ -33,7 +34,7 @@ const TrashList = () => {
     fetchFiles()
   }, [])
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <Loader /> 
   if (error) return <div>{error}</div>
 
   return (
