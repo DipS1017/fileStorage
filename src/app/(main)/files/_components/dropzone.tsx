@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -8,16 +8,21 @@ import { Minus, Upload } from "lucide-react";
 import axios from "axios";
 
 // Helper function to upload files to the server
-const uploadFiles = async (files: File[]) => {
+const uploadFiles = async (
+  files: File[],
+  ownerId: string,
+  accountId: string,
+) => {
   const formData = new FormData();
   files.forEach((file) => {
     formData.append("file[]", file);
   });
+  formData.append("ownerId", ownerId);
+  formData.append("accountId", accountId);
 
-  const response = await axios.post("/api/uploads/post", formData,{
-    headers: {"content-type": "multipart/form-data"},
-  }
-  );
+  const response = await axios.post("/api/uploads/post", formData, {
+    headers: { "content-type": "multipart/form-data" },
+  });
 
   if (!response.data) {
     throw new Error("Failed to upload files");
@@ -51,7 +56,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   const handleRemoveFile = (e: React.MouseEvent, fileToRemove: File) => {
     e.stopPropagation();
     setFiles((prevFiles) =>
-      prevFiles.filter((file) => file.name !== fileToRemove.name)
+      prevFiles.filter((file) => file.name !== fileToRemove.name),
     );
   };
 
@@ -70,7 +75,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
 
     try {
       // Call the uploadFiles function to upload the files using Axios
-      const response = await uploadFiles(files);
+      const response = await uploadFiles(files, ownerId, accountId);
       console.log("Files uploaded successfully:", response);
       setSuccessMessage("Files uploaded successfully!");
       setFiles([]);
@@ -80,9 +85,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
     } finally {
       setIsLoading(false);
     }
-    
   };
-
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
   });
@@ -111,7 +114,8 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
               />
             </svg>
             <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-              <span className="font-semibold">Click to upload</span> or drag and drop
+              <span className="font-semibold">Click to upload</span> or drag and
+              drop
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               SVG, PNG, JPG or GIF (MAX. 800x400px)
@@ -147,9 +151,9 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
         </ul>
       )}
 
-      <Button 
-        type="submit" 
-        className="mt-4 w-full" 
+      <Button
+        type="submit"
+        className="mt-4 w-full"
         disabled={isLoading || files.length === 0}
       >
         {isLoading ? (
@@ -157,13 +161,15 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
         ) : (
           <span className="flex items-center gap-2">
             <Upload size={24} />
-            Upload {files.length > 0 ? `(${files.length} files)` : ''}
+            Upload {files.length > 0 ? `(${files.length} files)` : ""}
           </span>
         )}
       </Button>
 
       {error && <p className="text-red-500 mt-2">{error}</p>}
-      {successMessage && <p className="text-green-500 mt-2">{successMessage}</p>}
+      {successMessage && (
+        <p className="text-green-500 mt-2">{successMessage}</p>
+      )}
     </form>
   );
 };
