@@ -8,7 +8,7 @@ const Landing=()=> {
   const { user } = useUser();
   return (
     <div className="min-h-screen bg-gradient-to-b from-secondary to-indigo-200">
-    <nav className="py-6 px-6 flex justify-between items-center bg-slate-50 shadow-md">
+    <nav className="py-6 sticky top-0 px-6 flex justify-between items-center bg-neutral-50 shadow-sm">
         <div className="flex items-center space-x-4">
           <span className="text-3xl pl-2 font-semibold text-primary">
             FileStorage
@@ -42,7 +42,10 @@ const Landing=()=> {
           anytime, anywhere.
         </p>
         <Button size="lg" className="text-lg px-8 py-4">
+
+              <Link href="/dashboard">
           Get Started
+</Link>
         </Button>
         <div className="flex justify-center py-6">
         <Image
