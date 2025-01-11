@@ -6,12 +6,16 @@ import prisma from "@/lib/prisma";
 
 export const POST = async (req: Request) => {
   try {
-    // Parse FormData from the request
+   // Parse FormData from the request
     const formData = await req.formData();
     const files = formData.getAll("file[]"); // Assumes input field has the name `file[]`
+    const accountId = formData.get("accountId");
 
     if (!files || files.length === 0) {
       return NextResponse.json({ error: "No valid files received." }, { status: 400 });
+    }
+    if( !accountId) {
+    return NextResponse.json({ error: "Owner ID or Account ID is missing." }, { status: 400 });
     }
 
     const uploadedFilesMetadata = []; // To store metadata for database insertion
@@ -36,12 +40,15 @@ export const POST = async (req: Request) => {
 
       // Store metadata for each file
       uploadedFilesMetadata.push({
+        ownerId:accountId,
+        accountId,
         fileName: originalFileName,
-        fileUrl: fileUrl,
+        filePath: fileUrl,
         fileSize: buffer.length, // File size in bytes
         uploadedAt: new Date(),
       });
     }
+    console.log("Uploaded files metadata:", uploadedFilesMetadata);
 
     // Save all file metadata to the database using Prisma
     const savedFiles = await prisma.file.createMany({

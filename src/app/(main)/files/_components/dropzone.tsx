@@ -6,18 +6,17 @@ import Thumbnail from "./Thumbnail";
 import { convertFileToUrl } from "../../utils";
 import { Minus, Upload } from "lucide-react";
 import axios from "axios";
+import { useUser} from "@clerk/nextjs";
 
 // Helper function to upload files to the server
 const uploadFiles = async (
   files: File[],
-  ownerId: string,
   accountId: string,
 ) => {
   const formData = new FormData();
   files.forEach((file) => {
     formData.append("file[]", file);
   });
-  formData.append("ownerId", ownerId);
   formData.append("accountId", accountId);
 
   const response = await axios.post("/api/uploads/post", formData, {
@@ -38,19 +37,21 @@ const getFileType = (filename: string) => {
 };
 
 export const FileUploader: React.FC<FileUploaderProps> = ({
-  ownerId,
-  accountId,
-  className = "",
+  className = ""
 }) => {
+  const { user } = useUser();
+  const accountId= user?.id;
   const [files, setFiles] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+console.log("ownerId", accountId);
   // Callback to handle file drop
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
   }, []);
+  console.log("files", files);
 
   // Function to handle file removal
   const handleRemoveFile = (e: React.MouseEvent, fileToRemove: File) => {
@@ -75,7 +76,10 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
 
     try {
       // Call the uploadFiles function to upload the files using Axios
-      const response = await uploadFiles(files, ownerId, accountId);
+      if (!accountId) {
+        throw new Error("Owner ID or Account ID is missing.");
+      }
+      const response = await uploadFiles(files,  accountId);
       console.log("Files uploaded successfully:", response);
       setSuccessMessage("Files uploaded successfully!");
       setFiles([]);
