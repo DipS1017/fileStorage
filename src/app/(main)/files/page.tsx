@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal} from "./_components/modal";
-import { FileCard } from "./_components/FileCard";
+import  FileList from "./_components/FileList";
 
 const FilesPage = () => {
 
@@ -49,7 +49,7 @@ const FilesPage = () => {
   return (
     <div className="min-h-screen ">
       <Modal />
-        <FileCard/>
+        <FileList/>
 
     </div>
   );
