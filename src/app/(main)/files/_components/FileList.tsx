@@ -21,6 +21,7 @@ const FileList = () => {
         }
 
         const data = await response.json()
+        console.log(data)
         setFiles(data.files)
       } catch (err) {
         setError('Error fetching files: ' + err.message)

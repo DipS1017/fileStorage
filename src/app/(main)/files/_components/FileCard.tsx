@@ -11,6 +11,14 @@ interface FileCardProps {
 export function FileCard({ file }: FileCardProps) {
   const fileExtension = file.fileName.split('.').pop()?.toLowerCase()
 
+  const getThumbnail = () => {
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg']
+    if (imageExtensions.includes(fileExtension || '')) {
+      return <img src={`http://localhost:3000${file.filePath}`} alt={file.fileName} className="w-16 h-16 object-cover" />
+    }
+    return null // Return nothing if it's not an image
+  }
+
   const getFileIcon = () => {
     switch (fileExtension) {
       case 'pdf':
@@ -46,7 +54,7 @@ export function FileCard({ file }: FileCardProps) {
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3">
-            <div className="text-4xl">{getFileIcon()}</div>
+            <div className="text-4xl">{getThumbnail()|| getFileIcon()}</div>
             <div>
               <h3 className="font-semibold text-lg truncate" title={file.fileName}>
                 {file.fileName}
