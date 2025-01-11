@@ -1,14 +1,17 @@
 import { File } from '@/types/file'
 import { formatDistanceToNow } from 'date-fns'
-import { MoreVerticalIcon } from 'lucide-react'
+import { MoreVerticalIcon, Trash2Icon } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuItem } from './ui/dropdown-menu'
+import { DropdownMenuContent, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 
 interface FileCardProps {
   file: File
+  isGrid: boolean
 }
 
-export function FileCard({ file }: FileCardProps) {
+export function FileCard({ file,isGrid }: FileCardProps) {
   const fileExtension = file.fileName.split('.').pop()?.toLowerCase()
 
   const getThumbnail = () => {
@@ -50,7 +53,7 @@ export function FileCard({ file }: FileCardProps) {
   }
 
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-300">
+    <Card className={`hover:shadow-lg transition-shadow duration-300 ${isGrid?'max-w-xs':'w-full'}`}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3">
@@ -64,9 +67,22 @@ export function FileCard({ file }: FileCardProps) {
               </p>
             </div>
           </div>
-          <Button variant="ghost" size="icon">
-            <MoreVerticalIcon className="h-4 w-4" />
-          </Button>
+ 
+        
+<DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <MoreVerticalIcon className="h-4 w-4" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem  className="text-red-600">
+                <Trash2Icon className="mr-2 h-4 w-4" />
+                <span>Delete</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </CardContent>
     </Card>

@@ -10,6 +10,7 @@ const FileList = () => {
   const [files, setFiles] = useState<File[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+const [isGrid, setIsGrid] = useState(false);
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -41,7 +42,7 @@ const FileList = () => {
       {files.length === 0 ? (
         <p>No files found</p>
       ) : (
-        files.map((file) => <FileCard key={file.id} file={file} />)
+        files.map((file) => <FileCard key={file.id} file={file} isGrid={isGrid} />)
       )}
     </div>
   )
