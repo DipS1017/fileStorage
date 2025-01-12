@@ -27,30 +27,33 @@ model User {
 }
 
 model File {
-  id         String      @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectId
-  ownerId    String
-  owner      User        @relation(fields: [ownerId], references: [id]) // Foreign key to User
-  fileName   String // File name
-  filePath   String // Path to the file in the storage
-  fileSize   Int? // Optional file size
-  uploadedAt DateTime    @default(now()) // Timestamp when the file was uploaded
-  sharedWith FileShare[] // Relationship with FileShare model
-  isDeleted   Boolean  @default(false) 
- deletedFiles  DeletedFile[] @relation("FileToDeletedFile")
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId        String      @db.ObjectId
+  owner          User        @relation(fields: [ownerId], references: [id])
+  fileName       String
+  filePath       String
+  fileSize       Int?
+  uploadedAt     DateTime    @default(now())
+  sharedWith     FileShare[]
+  isDeleted      Boolean     @default(false)
+  deletedFiles   DeletedFile[] @relation("FileToDeletedFile")
 }
 
 model DeletedFile {
-  id          String   @id @default(uuid()) @map("_id") @db.ObjectId 
-  fileId      String   @unique
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  fileId      String   @unique @db.ObjectId
   file        File     @relation(fields: [fileId], references: [id], name: "FileToDeletedFile")
   deletedAt   DateTime @default(now())
-  userId      String
-}model FileShare {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectId
-  fileId       String
-  file         File     @relation(fields: [fileId], references: [id]) // Foreign key to File
-  sharedWithId String
-  sharedWith   User     @relation(fields: [sharedWithId], references: [id]) // Foreign key to User
-  permissions  String   @default("view") // Permissions for the shared file (e.g., "view", "edit")
-  sharedAt     DateTime @default(now()) // Timestamp when the file was shared
+  userId      String   @db.ObjectId
 }
+
+model FileShare {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  fileId       String   @db.ObjectId
+  file         File     @relation(fields: [fileId], references: [id])
+  sharedWithId String   @db.ObjectId
+  sharedWith   User     @relation(fields: [sharedWithId], references: [id])
+  permissions  String   @default("view")
+  sharedAt     DateTime @default(now())
+}
+

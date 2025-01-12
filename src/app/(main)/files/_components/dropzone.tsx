@@ -18,6 +18,8 @@ const uploadFiles = async (
     formData.append("file[]", file);
   });
   formData.append("accountId", accountId);
+  console.log("formData", formData);
+  
 
   const response = await axios.post("/api/uploads/post", formData, {
     headers: { "content-type": "multipart/form-data" },
