@@ -1,6 +1,7 @@
 import React from "react";
 import { getFileIcon } from "../../utils";
 import { cn } from "@/lib/utils";
+import { ThumbnailProps } from "@/types";
 
 const Thumbnail = ({
   type,

@@ -1,4 +1,4 @@
-import { File } from '@/types/file'
+import { File } from '@/types'
 import { formatDistanceToNow } from 'date-fns'
 import { MoreVerticalIcon, Trash2Icon } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
@@ -79,7 +79,7 @@ export function FileCard({ file,isGrid }: FileCardProps) {
             <DropdownMenuContent align="end">
               <DropdownMenuItem  className="text-red-600">
                 <Trash2Icon className="mr-2 h-4 w-4" />
-                <span>Delete</span>
+                <span><button> </button></span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

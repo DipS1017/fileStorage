@@ -7,6 +7,7 @@ import { convertFileToUrl } from "../../utils";
 import { Minus, Upload } from "lucide-react";
 import axios from "axios";
 import { useUser} from "@clerk/nextjs";
+import { FileUploaderProps } from "@/types";
 
 // Helper function to upload files to the server
 const uploadFiles = async (
@@ -85,14 +86,14 @@ console.log("ownerId", accountId);
       console.log("Files uploaded successfully:", response);
       setSuccessMessage("Files uploaded successfully!");
       setFiles([]);
-    } catch (err: any) {
-      console.error("Error uploading files:", err.message);
-      setError("Error uploading files: " + err.message);
+    } catch (err: unknown) {
+      console.error("Error uploading files:", err);
+      setError("Error uploading files: " + err);
     } finally {
       setIsLoading(false);
     }
   };
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     onDrop,
   });
 

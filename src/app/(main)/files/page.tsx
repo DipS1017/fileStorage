@@ -2,7 +2,7 @@ import React from "react";
 import { Modal} from "./_components/modal";
 import  FileList from "./_components/FileList";
 import { Button } from "@/components/ui/button";
-import { FileIcon, GridIcon, ListIcon } from "lucide-react";
+import { FileIcon, GridIcon,} from "lucide-react";
 
 const FilesPage = () => {
 

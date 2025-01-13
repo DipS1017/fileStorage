@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import {FileCard} from "@/./components/FileCard"
 import {Loader} from "@/./components/element/loader"
+import {File} from "@/types"
 
 
 const FileList = () => {
@@ -11,7 +12,7 @@ const FileList = () => {
   const [files, setFiles] = useState<File[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
-const [isGrid, setIsGrid] = useState(false);
+const [isGrid, ] = useState(false);
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -25,8 +26,8 @@ const [isGrid, setIsGrid] = useState(false);
         const data = await response.json()
         console.log(data)
         setFiles(data.files)
-      } catch (err) {
-        setError('Error fetching files: ' + err.message)
+      } catch (err:unknown) {
+        setError('Error fetching files: ' + err)
       } finally {
         setLoading(false)
       }
