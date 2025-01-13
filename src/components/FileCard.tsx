@@ -1,10 +1,12 @@
+"use client";
 import { File } from '@/types'
 import { formatDistanceToNow } from 'date-fns'
-import { MoreVerticalIcon, Trash2Icon } from 'lucide-react'
+import { ArchiveRestore, MoreVerticalIcon, Trash2Icon } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuItem } from './ui/dropdown-menu'
 import { DropdownMenuContent, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
+import { usePathname } from 'next/navigation'
 
 interface FileCardProps {
   file: File
@@ -12,6 +14,7 @@ interface FileCardProps {
 }
 
 export function FileCard({ file,isGrid }: FileCardProps) {
+  const pathname=usePathname()
   const fileExtension = file.fileName.split('.').pop()?.toLowerCase()
 
   const getThumbnail = () => {
@@ -50,6 +53,7 @@ export function FileCard({ file,isGrid }: FileCardProps) {
       i++
     }
     return `${size.toFixed(1)} ${units[i]}`
+  
   }
   const handleDelete = async () => {
     try {
@@ -64,13 +68,21 @@ export function FileCard({ file,isGrid }: FileCardProps) {
       if (!response.ok) {
         throw new Error('Error deleting file')
       }
-
+ 
     } catch (error) {
       console.error('Error deleting file:', error)
     }
   
   }
-  
+/* const handleRestore=async()=>{
+try{
+
+    }
+  } */
+
+const isInFile=pathname==='/files';
+const isInTrash=pathname==='/trash';
+const isInFavorites=pathname==='/favorites';
 
 
   return (
@@ -99,8 +111,18 @@ export function FileCard({ file,isGrid }: FileCardProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem  className="text-red-600">
+               {!isInTrash&& (
+                  <>
                 <Trash2Icon className="mr-2 h-4 w-4" />
                 <span><button onClick={handleDelete}>Delete </button></span>
+                  </>
+                )}
+                {isInTrash&& (
+                  <>
+                    <ArchiveRestore className="mr-2 h-4 w-4" />
+                    <span><button > Restore</button></span>
+                  </>
+                  )}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

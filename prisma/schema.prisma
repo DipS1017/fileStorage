@@ -36,6 +36,7 @@ model File {
   uploadedAt     DateTime    @default(now())
   sharedWith     FileShare[]
   isDeleted      Boolean     @default(false)
+  isFavorite    Boolean     @default(false)
   deletedFiles   DeletedFile[] @relation("FileToDeletedFile")
 }
 
