@@ -45,10 +45,19 @@ export const POST = async (req: Request) => {
 
       // Generate a public URL for the uploaded file
       const fileUrl = `/uploads/${sanitizedFileName}`;
+      const user= await prisma.user.findUnique({
+          where:{clerkId:accountId},
+      })
+      if(!user){
+          return NextResponse.json(
+              { error: "User not found." },
+              { status: 404 },
+          );
+      }
 
       // Store metadata for each file
       uploadedFilesMetadata.push({
-        ownerId: accountId,
+        ownerId: user.id,
         fileName: originalFileName,
         filePath: fileUrl,
         fileSize: buffer.length, // File size in bytes
@@ -59,7 +68,7 @@ export const POST = async (req: Request) => {
     // Save all file metadata to the database using Prisma
     try {
       if (uploadedFilesMetadata.length === 0) {
-        console.error("No files to save to the database.");
+        console.log("No files to save to the database.");
         return NextResponse.json(
           { error: "No files to save to the database." },
           { status: 500 },
@@ -70,9 +79,9 @@ export const POST = async (req: Request) => {
       });
       console.log("Saved files:", savedFiles);
     } catch (dbError) {
-      console.error("Database error:", dbError);
+      console.log("Database error:", dbError.stack);
       return NextResponse.json(
-        { error: "Database error: " + dbError.message },
+        { error: "Database error: " + dbError},
         { status: 500 },
       );
     }
@@ -87,7 +96,7 @@ export const POST = async (req: Request) => {
     );
   } catch (error) {
     // Improved error handling with error logging
-    console.error("Error during file upload:", error);
+    console.log("Error during file upload:", error);
 
     // Check if the error is an instance of Error to get the message
     const errorMessage =
