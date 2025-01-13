@@ -1,4 +1,5 @@
 
+
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma'; // Adjust your prisma path
 import { auth } from '@clerk/nextjs/server'; // Import Clerk's auth module
@@ -33,7 +34,7 @@ export const GET = async () => {
     const files = await prisma.file.findMany({
       where: {
         ownerId: user.id, // Assuming the `ownerId` field stores the userId
-        isDeleted:false,
+        isDeleted:true,
       },
     });
 

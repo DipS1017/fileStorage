@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import {FileCard} from "@/./components/FileCard"
 import {Loader} from "@/./components/element/loader"
+import {File} from "@/types"
 
 
 const TrashList = () => {
@@ -15,7 +16,7 @@ const TrashList = () => {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await fetch('/api/file/get')
+        const response = await fetch('/api/trash/get')
 
         if (!response.ok) {
           throw new Error('Error fetching files')
@@ -24,8 +25,8 @@ const TrashList = () => {
         const data = await response.json()
         console.log(data)
         setFiles(data.files)
-      } catch (err) {
-        setError('Error fetching files: ' + err.message)
+      } catch (err:unknown) {
+        setError('Error fetching files: ' + err)
       } finally {
         setLoading(false)
       }
