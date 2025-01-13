@@ -74,11 +74,25 @@ export function FileCard({ file,isGrid }: FileCardProps) {
     }
   
   }
-/* const handleRestore=async()=>{
-try{
+  const handleRestore = async () => {
 
-    }
-  } */
+    try {
+      const response = await fetch('/api/trash/patch', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ fileId: file.id }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Error deleting file')
+      }
+
+    } catch (error) {
+      console.error('Error restoring file:', error)
+  }
+  }
 
 const isInFile=pathname==='/files';
 const isInTrash=pathname==='/trash';
@@ -110,20 +124,24 @@ const isInFavorites=pathname==='/favorites';
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem  className="text-red-600">
                {!isInTrash&& (
                   <>
+              <DropdownMenuItem  className="text-red-600">
                 <Trash2Icon className="mr-2 h-4 w-4" />
                 <span><button onClick={handleDelete}>Delete </button></span>
+                  </DropdownMenuItem>
                   </>
                 )}
                 {isInTrash&& (
                   <>
+
+              <DropdownMenuItem  className="text-green-600 ">
                     <ArchiveRestore className="mr-2 h-4 w-4" />
-                    <span><button > Restore</button></span>
+                    <span><button onClick={handleRestore}> Restore</button></span>
+
+                  </DropdownMenuItem>
                   </>
                   )}
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
