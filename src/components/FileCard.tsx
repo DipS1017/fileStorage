@@ -51,6 +51,27 @@ export function FileCard({ file,isGrid }: FileCardProps) {
     }
     return `${size.toFixed(1)} ${units[i]}`
   }
+  const handleDelete = async () => {
+    try {
+      const response = await fetch('/api/file/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ fileId: file.id }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Error deleting file')
+      }
+
+    } catch (error) {
+      console.error('Error deleting file:', error)
+    }
+  
+  }
+  
+
 
   return (
     <Card className={`hover:shadow-lg transition-shadow duration-300 ${isGrid?'max-w-xs':'w-full'}`}>
@@ -79,7 +100,7 @@ export function FileCard({ file,isGrid }: FileCardProps) {
             <DropdownMenuContent align="end">
               <DropdownMenuItem  className="text-red-600">
                 <Trash2Icon className="mr-2 h-4 w-4" />
-                <span><button> </button></span>
+                <span><button onClick={handleDelete}>Delete </button></span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
