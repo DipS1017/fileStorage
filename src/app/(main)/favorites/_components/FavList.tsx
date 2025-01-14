@@ -6,9 +6,9 @@ import { Loader } from "@/./components/element/loader";
 import { File } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
-// Helper function to fetch files from the trash
-const fetchTrashFiles = async (): Promise<{ files: File[] }> => {
-  const response = await fetch("/api/trash/get");
+// Helper function to fetch files
+const fetchFiles = async (): Promise<{ files: File[] }> => {
+  const response = await fetch("/api/fav/get");
 
   if (!response.ok) {
     throw new Error("Error fetching files");
@@ -17,19 +17,19 @@ const fetchTrashFiles = async (): Promise<{ files: File[] }> => {
   return await response.json();
 };
 
-const TrashList = () => {
+const FavList= () => {
   // Use the useQuery hook from TanStack Query
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["trashFiles"], // The query key
-    queryFn: fetchTrashFiles, // The function to fetch the data
-    staleTime: 5 * 1000, 
+    queryKey: ["files"], // Unique query key
+    queryFn: fetchFiles, // Fetching function
+    staleTime: 5*1000,
   });
 
   // Loading state
   if (isLoading) return <Loader />;
 
   // Error state
-  if (isError) return <div>{(error as Error).message}</div>;
+  if (isError) return <div>Error fetching files: {(error as Error).message}</div>;
 
   // Render the files list
   return (
@@ -43,5 +43,5 @@ const TrashList = () => {
   );
 };
 
-export default TrashList;
+export default FavList;
 

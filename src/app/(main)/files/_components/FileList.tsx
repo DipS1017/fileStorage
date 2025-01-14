@@ -17,7 +17,7 @@ const fetchFiles = async (): Promise<File[]> => {
   return data.files;
 };
 const FileList = () => {
-  const { data: files, isLoading, isError, error,refetch} = useQuery<File[], Error>({
+  const { data: files, isLoading, isError, error,} = useQuery<File[], Error>({
     queryKey: ["files"],
     queryFn: fetchFiles,
     staleTime:5*1000,

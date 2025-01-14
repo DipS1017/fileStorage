@@ -37,6 +37,7 @@ export interface File {
   uploadedAt: string; // Timestamp for when file was uploaded
   sharedWith: FileShare[]; // Files shared with other users (one-to-many)
   isDeleted: boolean; // Soft delete flag (default is false)
+  isFavorite: boolean; // Favorite flag (default is false)
   deletedFiles: DeletedFile[]; // Relationship with deleted files (one-to-many)
 }
 

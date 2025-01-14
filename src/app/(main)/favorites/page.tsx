@@ -1,5 +1,5 @@
 import React from "react";
-import TrashList from "./_components/TrashList";
+import FavList from "./_components/FavList";
 import { Button } from "@/components/ui/button";
 import { GridIcon, StarIcon } from "lucide-react";
 
@@ -20,10 +20,10 @@ const favoritePage= () => {
         </Button>
          </div>
       </div>
-    <div className="min-h-screen p-1 ">
+   <div className="min-h-screen p-1 ">
 
 
-        <TrashList/>
+        <FavList/>
     </div>
     </div>
   );
