@@ -61,6 +61,7 @@ export function FileCard({ file, isGrid }: FileCardProps) {
       // Invalidate queries related to files or trash, depending on the action
 
       queryClient.invalidateQueries({queryKey:["trashFiles"]});
+      queryClient.invalidateQueries({queryKey:["favfiles"]});
       queryClient.invalidateQueries({queryKey:["files"]});
     },
     onError: (error: unknown) => {
@@ -73,6 +74,7 @@ export function FileCard({ file, isGrid }: FileCardProps) {
     onSuccess: () => {
       // Invalidate trash query after restoring
       queryClient.invalidateQueries({queryKey:["trashFiles"]});
+      queryClient.invalidateQueries({queryKey:["favfiles"]});
       queryClient.invalidateQueries({queryKey:["files"]});
     },
     onError: (error: unknown) => {
@@ -151,6 +153,7 @@ export function FileCard({ file, isGrid }: FileCardProps) {
             </div>
           </div>
           <div className="flex items-center space-x-2">
+            {!isInTrash&&(
             <Button
               variant="ghost"
               size="icon"
@@ -163,6 +166,9 @@ export function FileCard({ file, isGrid }: FileCardProps) {
             >
               <Star className={`h-5 w-5 ${file.isFavorite ? "fill-current" : ""}`} />
             </Button>
+            )
+            }
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8">
