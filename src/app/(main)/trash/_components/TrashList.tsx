@@ -1,53 +1,47 @@
-"use client"
 
-import { useEffect, useState } from "react"
-import {FileCard} from "@/./components/FileCard"
-import {Loader} from "@/./components/element/loader"
-import {File} from "@/types"
+"use client";
 
+import { FileCard } from "@/./components/FileCard";
+import { Loader } from "@/./components/element/loader";
+import { File } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+
+// Helper function to fetch files from the trash
+const fetchTrashFiles = async (): Promise<{ files: File[] }> => {
+  const response = await fetch("/api/trash/get");
+
+  if (!response.ok) {
+    throw new Error("Error fetching files");
+  }
+
+  return await response.json();
+};
 
 const TrashList = () => {
+  // Use the useQuery hook from TanStack Query
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["trashFiles"], // The query key
+    queryFn: fetchTrashFiles, // The function to fetch the data
+    staleTime: 5 * 1000, 
+  });
 
+  // Loading state
+  if (isLoading) return <Loader />;
 
-  const [files, setFiles] = useState<File[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
+  // Error state
+  if (isError) return <div>{(error as Error).message}</div>;
 
-  useEffect(() => {
-    const fetchFiles = async () => {
-      try {
-        const response = await fetch('/api/trash/get')
-
-        if (!response.ok) {
-          throw new Error('Error fetching files')
-        }
-
-        const data = await response.json()
-        console.log(data)
-        setFiles(data.files)
-      } catch (err:unknown) {
-        setError('Error fetching files: ' + err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchFiles()
-  }, [])
-
-  if (loading) return <Loader /> 
-  if (error) return <div>{error}</div>
-
+  // Render the files list
   return (
     <div className="file-list">
-      {files.length === 0 ? (
+      {data?.files.length === 0 ? (
         <p>No files found</p>
       ) : (
-        files.map((file) => <FileCard key={file.id} file={file} />)
+        data.files.map((file) => <FileCard key={file.id} file={file} />)
       )}
     </div>
-  )
-}
+  );
+};
 
-export default TrashList 
+export default TrashList;
 
