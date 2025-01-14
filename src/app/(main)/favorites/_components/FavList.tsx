@@ -20,7 +20,7 @@ const fetchFiles = async (): Promise<{ files: File[] }> => {
 const FavList= () => {
   // Use the useQuery hook from TanStack Query
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["files"], // Unique query key
+    queryKey: ["Favfiles"], // Unique query key
     queryFn: fetchFiles, // Fetching function
     staleTime: 5*1000,
   });

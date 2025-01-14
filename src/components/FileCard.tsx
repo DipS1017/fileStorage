@@ -3,7 +3,7 @@
 
 import { File } from "@/types";
 import { formatDistanceToNow } from "date-fns";
-import { ArchiveRestore, ArchiveRestoreIcon, MoreVertical, MoreVerticalIcon, Star, StarIcon, StarOffIcon, Trash2, Trash2Icon } from "lucide-react";
+import {  ArchiveRestoreIcon, MoreVertical, Star,  Trash2, } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuItem } from "./ui/dropdown-menu";
