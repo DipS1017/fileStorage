@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AppSidebar } from "@/components/app-sidebar";
+
 import {
   SidebarProvider,
 } from "@/components/ui/sidebar";

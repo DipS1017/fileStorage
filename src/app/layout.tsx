@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma';
 import {
   ClerkProvider,
 } from "@clerk/nextjs";
+import  Provider  from "../providers/queryClient";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,6 @@ async function checkConnectionOnStartup() {
 }
 
 checkConnectionOnStartup(); // Call this when your server starts
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -45,7 +45,11 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased  `}
         >
-          <main>{children}</main>
+          <Provider>
+          <main>
+              {children}
+            </main>
+          </Provider>
         </body>
       </html>
     </ClerkProvider>
