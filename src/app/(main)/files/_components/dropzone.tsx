@@ -1,4 +1,6 @@
+
 "use client";
+
 import { Button } from "@/components/ui/button";
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -6,21 +8,17 @@ import Thumbnail from "./Thumbnail";
 import { convertFileToUrl } from "../../utils";
 import { Minus, Upload } from "lucide-react";
 import axios from "axios";
-import { useUser} from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
+import { useMutation } from "@tanstack/react-query";
 import { FileUploaderProps } from "@/types";
 
-// Helper function to upload files to the server
-const uploadFiles = async (
-  files: File[],
-  accountId: string,
-) => {
+// Helper function to upload files
+const uploadFiles = async (files: File[], accountId: string) => {
   const formData = new FormData();
   files.forEach((file) => {
     formData.append("file[]", file);
   });
   formData.append("accountId", accountId);
-  console.log("formData", formData);
-  
 
   const response = await axios.post("/api/uploads/post", formData, {
     headers: { "content-type": "multipart/form-data" },
@@ -33,6 +31,7 @@ const uploadFiles = async (
   return response.data; // This returns the uploaded data or success info
 };
 
+// Helper to determine file type
 const getFileType = (filename: string) => {
   const extension = filename.split(".").pop() || "";
   const type = extension.match(/jpg|jpeg|png|gif/) ? "Image" : "File";
@@ -40,62 +39,56 @@ const getFileType = (filename: string) => {
 };
 
 export const FileUploader: React.FC<FileUploaderProps> = ({
-  className = ""
+  className = "",
 }) => {
   const { user } = useUser();
-  const accountId= user?.id;
+  const accountId = user?.id;
   const [files, setFiles] = useState<File[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-console.log("ownerId", accountId);
+  console.log("ownerId", accountId);
+
+  // TanStack Query v5 mutation for file upload
+  const uploadMutation = useMutation({
+    mutationFn: (filesToUpload: File[]) => {
+      if (!accountId) {
+        throw new Error("Owner ID or Account ID is missing.");
+      }
+      return uploadFiles(filesToUpload, accountId);
+    },
+    onSuccess: () => {
+      setFiles([]); // Clear selected files on success
+    },
+    onError: (err: unknown) => {
+      setError("Error uploading files: " + (err as Error).message);
+    },
+  });
+
   // Callback to handle file drop
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
+    setError(null);
   }, []);
-  console.log("files", files);
 
   // Function to handle file removal
   const handleRemoveFile = (e: React.MouseEvent, fileToRemove: File) => {
     e.stopPropagation();
     setFiles((prevFiles) =>
-      prevFiles.filter((file) => file.name !== fileToRemove.name),
+      prevFiles.filter((file) => file.name !== fileToRemove.name)
     );
   };
 
   // Handle form submission to upload the files
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (files.length === 0) {
       console.log("No files to upload.");
       return;
     }
-
-    setIsLoading(true);
-    setError(null);
-    setSuccessMessage(null);
-
-    try {
-      // Call the uploadFiles function to upload the files using Axios
-      if (!accountId) {
-        throw new Error("Owner ID or Account ID is missing.");
-      }
-      const response = await uploadFiles(files,  accountId);
-      console.log("Files uploaded successfully:", response);
-      setSuccessMessage("Files uploaded successfully!");
-      setFiles([]);
-    } catch (err: unknown) {
-      console.error("Error uploading files:", err);
-      setError("Error uploading files: " + err);
-    } finally {
-      setIsLoading(false);
-    }
+    uploadMutation.mutate(files);
   };
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-  });
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (
     <form onSubmit={handleSubmit}>
@@ -161,9 +154,9 @@ console.log("ownerId", accountId);
       <Button
         type="submit"
         className="mt-4 w-full"
-        disabled={isLoading || files.length === 0}
+        disabled={uploadMutation.isPending|| files.length === 0}
       >
-        {isLoading ? (
+        {uploadMutation.isPending? (
           <span>Uploading...</span>
         ) : (
           <span className="flex items-center gap-2">
@@ -173,10 +166,13 @@ console.log("ownerId", accountId);
         )}
       </Button>
 
-      {error && <p className="text-red-500 mt-2">{error}</p>}
-      {successMessage && (
-        <p className="text-green-500 mt-2">{successMessage}</p>
+      {uploadMutation.isError && (
+        <p className="text-red-500 mt-2">{error}</p>
+      )}
+      {uploadMutation.isSuccess && (
+        <p className="text-green-500 mt-2">Files uploaded successfully!</p>
       )}
     </form>
   );
 };
+
