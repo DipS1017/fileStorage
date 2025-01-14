@@ -9,7 +9,7 @@ import { convertFileToUrl } from "../../utils";
 import { Minus, Upload } from "lucide-react";
 import axios from "axios";
 import { useUser } from "@clerk/nextjs";
-import { useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { FileUploaderProps } from "@/types";
 
 // Helper function to upload files
@@ -46,6 +46,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  const queryClient = useQueryClient();
   console.log("ownerId", accountId);
 
   // TanStack Query v5 mutation for file upload
@@ -58,6 +59,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
     },
     onSuccess: () => {
       setFiles([]); // Clear selected files on success
+      queryClient.invalidateQueries({queryKey:["files"]}); // Invalidate the files query to refetch
     },
     onError: (err: unknown) => {
       setError("Error uploading files: " + (err as Error).message);
