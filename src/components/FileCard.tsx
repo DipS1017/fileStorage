@@ -3,7 +3,7 @@
 
 import { File } from "@/types";
 import { formatDistanceToNow } from "date-fns";
-import { ArchiveRestore, MoreVerticalIcon, Trash2Icon } from "lucide-react";
+import { ArchiveRestore, ArchiveRestoreIcon, MoreVertical, MoreVerticalIcon, Star, StarIcon, StarOffIcon, Trash2, Trash2Icon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuItem } from "./ui/dropdown-menu";
@@ -131,50 +131,64 @@ export function FileCard({ file, isGrid }: FileCardProps) {
   const isInFavorites = pathname === "/favorites";
 
   return (
-    <Card className={`hover:shadow-lg transition-shadow duration-300 ${isGrid ? "max-w-xs" : "w-full"}`}>
+   
+<Card
+      className={`hover:shadow-lg transition-shadow duration-300 ${
+        isGrid ? "max-w-xs" : "w-full"
+      }`}
+    >
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3">
-            <div className="text-4xl">{getThumbnail() || getFileIcon()}</div>
+            <div className="text-4xl">{getThumbnail(file) || getFileIcon(file)}</div>
             <div>
               <h3 className="font-semibold text-lg truncate" title={file.fileName}>
                 {file.fileName}
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 {formatFileSize(file.fileSize)} • {formatDistanceToNow(new Date(file.uploadedAt), { addSuffix: true })}
               </p>
             </div>
           </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreVerticalIcon className="h-4 w-4" />
-                <span className="sr-only">Open menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {!isInTrash && (
-                <DropdownMenuItem className="text-red-600">
-                  <Trash2Icon className="mr-2 h-4 w-4" />
-                  <span>
-                    <button onClick={handleDelete}>Delete</button>
-                  </span>
-                </DropdownMenuItem>
-              )}
-              {isInTrash && (
-                <DropdownMenuItem className="text-green-600">
-                  <ArchiveRestore className="mr-2 h-4 w-4" />
-                  <span>
-                    <button onClick={handleRestore}>Restore</button>
-                  </span>
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`h-8 w-8 transition-colors duration-200 ${
+                file.isFavorite
+                  ? "text-yellow-500 hover:text-yellow-600"
+                  : "text-muted-foreground hover:text-yellow-500"
+              }`}
+              aria-label={file.isFavorite ? "Remove from favorites" : "Add to favorites"}
+            >
+              <Star className={`h-5 w-5 ${file.isFavorite ? "fill-current" : ""}`} />
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <MoreVertical className="h-4 w-4" />
+                  <span className="sr-only">Open menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {!isInTrash ? (
+                  <DropdownMenuItem onClick={handleDelete} className="text-destructive">
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    <span>Delete</span>
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem onClick={handleRestore} className="text-green-600">
+                    <ArchiveRestoreIcon className="mr-2 h-4 w-4" />
+                    <span>Restore</span>
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
+
 
