@@ -43,6 +43,23 @@ const restoreFile = async (fileId: string) => {
   return fileId; // Return fileId to be used for invalidating queries
 };
 
+// Helper function to toggle favorite
+const toggleFavorite = async (fileId: string, isFavorite: boolean) => {
+  const response = await fetch('/api/fav/toggle', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ fileId, isFavorite }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Error toggling favorite status');
+  }
+
+  return fileId; // Return fileId for invalidating queries
+};
+
 interface FileCardProps {
   file: File;
   isGrid: boolean;
@@ -81,6 +98,19 @@ export function FileCard({ file, isGrid }: FileCardProps) {
       console.error('Error restoring file:', error);
     },
   });
+
+const toggleFavoriteMutation = useMutation({
+  mutationFn: ({ fileId, isFavorite }: { fileId: string; isFavorite: boolean }) =>
+    toggleFavorite(fileId, isFavorite),
+  onSuccess: () => {
+    // Invalidate relevant queries to reflect changes
+    queryClient.invalidateQueries({ queryKey: ['favfiles'] });
+    queryClient.invalidateQueries({ queryKey: ['files'] });
+  },
+  onError: (error: unknown) => {
+    console.error('Error toggling favorite status:', error);
+  },
+});
 
   const getThumbnail = () => {
     const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'];
@@ -127,10 +157,7 @@ export function FileCard({ file, isGrid }: FileCardProps) {
   const handleRestore = () => {
     restoreMutation.mutate(file.id);
   };
-
-  const isInFile = pathname === "/files";
   const isInTrash = pathname === "/trash";
-  const isInFavorites = pathname === "/favorites";
 
   return (
    
@@ -163,7 +190,7 @@ export function FileCard({ file, isGrid }: FileCardProps) {
                   : "text-muted-foreground hover:text-yellow-500"
               }`}
               aria-label={file.isFavorite ? "Remove from favorites" : "Add to favorites"}
-            >
+            onClick={()=>toggleFavoriteMutation.mutate({fileId:file.id,isFavorite:!file.isFavorite})}>
               <Star className={`h-5 w-5 ${file.isFavorite ? "fill-current" : ""}`} />
             </Button>
             )
