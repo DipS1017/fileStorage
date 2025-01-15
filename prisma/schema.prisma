@@ -42,17 +42,10 @@ model File {
   sharedWith     FileShare[]
   isDeleted      Boolean     @default(false)
   isFavorite    Boolean     @default(false)
-  deletedFiles   DeletedFile[] @relation("FileToDeletedFile")
 }
 
 
-model DeletedFile {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  fileId    String   @unique @db.ObjectId
-  file      File     @relation(fields: [fileId], references: [id], name: "FileToDeletedFile")
-  userId    String   @db.ObjectId
-  deletedAt DateTime @default(now())
-}
+
 
 model FileShare {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
