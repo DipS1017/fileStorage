@@ -167,9 +167,8 @@ export function FileCard({ file, isGrid }: FileCardProps) {
   return (
     <>
       <Card
-        className={`hover:shadow-lg transition-shadow duration-300 ${
-          isGrid ? "max-w-xs" : "w-full"
-        }`}
+        className={`hover:shadow-lg transition-shadow duration-300 ${isGrid ? "max-w-xs" : "w-full"
+          }`}
         onClick={() => setIsModalOpen(true)}
       >
         <CardContent className="p-4">
@@ -198,22 +197,22 @@ export function FileCard({ file, isGrid }: FileCardProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className={`h-8 w-8 transition-colors duration-200 ${
-                    file.isFavorite
+                  className={`h-8 w-8 transition-colors duration-200 ${file.isFavorite
                       ? "text-yellow-500 hover:text-yellow-600"
                       : "text-muted-foreground hover:text-yellow-500"
-                  }`}
+                    }`}
                   aria-label={
                     file.isFavorite
                       ? "Remove from favorites"
                       : "Add to favorites"
                   }
-                  onClick={() =>
+                  onClick={(e) => {
+                    e.stopPropagation();
                     toggleFavoriteMutation.mutate({
                       fileId: file.id,
                       isFavorite: !file.isFavorite,
-                    })
-                  }
+                    });
+                  }}
                 >
                   <Star
                     className={`h-5 w-5 ${file.isFavorite ? "fill-current" : ""}`}
