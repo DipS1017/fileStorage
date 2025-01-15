@@ -136,7 +136,7 @@ export function FileCard({ file, isGrid }: FileCardProps) {
     },
   });
   const permaDeleteMutation = useMutation({
-    mutationFn: ({ fileId }: { fileId: string }) => permaDeleteFile(fileId),
+    mutationFn: permaDeleteFile,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["trashFiles"] });
     },
@@ -253,11 +253,17 @@ export function FileCard({ file, isGrid }: FileCardProps) {
                     <span className="sr-only">Open menu</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent
+                  align="end"
+                  className="bg-white rounded-sm shadow-md"
+                >
                   {!isInTrash ? (
                     <>
                       <DropdownMenuItem
-                        onClick={handleDelete}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete();
+                        }}
                         className="text-destructive"
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
@@ -267,14 +273,21 @@ export function FileCard({ file, isGrid }: FileCardProps) {
                   ) : (
                     <>
                       <DropdownMenuItem
-                        onClick={handleRestore}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRestore();
+                        }}
+
                         className="text-green-600"
                       >
                         <ArchiveRestoreIcon className="mr-2 h-4 w-4" />
                         <span>Restore</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={permaDeleteFile}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePermaDelete();
+                        }}
                         className="text-red-600"
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
