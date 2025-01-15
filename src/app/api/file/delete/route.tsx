@@ -26,27 +26,20 @@ export const DELETE = async (req: Request) => {
     }
 
     // Perform the soft delete by setting isDeleted to true
-    const deletedFile = await prisma.file.update({
+ await prisma.file.update({
       where: { id: fileId },
       data: {
         isDeleted: true, // Mark as deleted
       },
     });
 
-    // Optionally, you can store the deleted file details in the DeletedFile model for record-keeping
-    await prisma.deletedFile.create({
-      data: {
-        fileId: deletedFile.id,
-        userId: deletedFile.ownerId, // This is the user who deleted the file (or the current user)
-      },
-    });
 
     return NextResponse.json(
       { message: "File marked as deleted successfully" },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error during file deletion:", error);
+    console.log("Error during file deletion:", error.stack);
     return NextResponse.json(
       { error: "Error deleting file" },
       { status: 500 }

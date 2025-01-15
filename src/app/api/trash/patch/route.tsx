@@ -41,17 +41,12 @@ export const PATCH = async (req: Request) => {
       },
     });
 
-    // Optionally, you can delete the corresponding record from the DeletedFile table
-    await prisma.deletedFile.delete({
-      where: { fileId: fileId }, // Use fileId to delete the deletedFile record
-    });
-
     return NextResponse.json(
       { message: "File restored successfully", file: updatedFile },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error during file restoration:", error);
+    console.log("Error during file restoration:", error.stack);
     return NextResponse.json(
       { error: "Error restoring file" },
       { status: 500 }
