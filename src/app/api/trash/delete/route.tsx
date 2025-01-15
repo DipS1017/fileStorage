@@ -27,6 +27,17 @@ export const DELETE = async (req: Request) => {
       );
     }
 
+    // Debugging: Log the file data
+    console.log("File found:", file);
+
+    // Ensure fileId and userId are available
+    if (!file.id || !file.ownerId) {
+      return NextResponse.json(
+        { error: "Missing required fields: fileId or ownerId" },
+        { status: 400 }
+      );
+    }
+
     // Construct the file path
     const filePath = path.join(process.cwd(), "public", file.filePath);
 
@@ -35,10 +46,7 @@ export const DELETE = async (req: Request) => {
       data: {
         fileId: file.id,
         fileName: file.fileName,
-        ownerId: file.ownerId,
-        filePath: file.filePath,
-        fileSize: file.fileSize,
-        deletedAt: new Date(),
+        userId: file.ownerId, 
       },
     });
 
@@ -47,7 +55,7 @@ export const DELETE = async (req: Request) => {
       await unlink(filePath);
       console.log(`File deleted from server: ${filePath}`);
     } catch (fsError) {
-      console.error(`Error deleting file from server: ${fsError}`);
+      console.log(`Error deleting file from server: ${fsError}`);
       return NextResponse.json(
         { error: "Error deleting file from server" },
         { status: 500 }
@@ -64,7 +72,7 @@ export const DELETE = async (req: Request) => {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error during file deletion:", error);
+    console.log("Error during file deletion:", error.stack);
     return NextResponse.json(
       { error: "Error deleting file" },
       { status: 500 }

@@ -45,12 +45,13 @@ model File {
   deletedFiles   DeletedFile[] @relation("FileToDeletedFile")
 }
 
+
 model DeletedFile {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  fileId      String   @unique @db.ObjectId
-  file        File     @relation(fields: [fileId], references: [id], name: "FileToDeletedFile")
-  deletedAt   DateTime @default(now())
-  userId      String   @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  fileId    String   @unique @db.ObjectId
+  file      File     @relation(fields: [fileId], references: [id], name: "FileToDeletedFile")
+  userId    String   @db.ObjectId
+  deletedAt DateTime @default(now())
 }
 
 model FileShare {
@@ -59,7 +60,7 @@ model FileShare {
   file         File     @relation(fields: [fileId], references: [id])
   sharedWithId String   @db.ObjectId
   sharedWith   User     @relation(fields: [sharedWithId], references: [id])
-  permissions  Permission @default("view")
+  permissions  Permission @default(VIEW)
   sharedAt     DateTime @default(now())
 }
 
