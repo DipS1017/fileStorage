@@ -63,7 +63,21 @@ const toggleFavorite = async (fileId: string, isFavorite: boolean) => {
 
   return fileId; // Return fileId for invalidating queries
 };
+// function to perma delete from Trash
+const permaDeleteFile = async (fileId: string) => {
+  const response = await fetch("/api/trash/delete", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ fileId }),
+  });
 
+  if (!response.ok) {
+    throw new Error("Error deleting file");
+  }
+  return fileId; // Return fileId to be used for invalidating queries
+};
 interface FileCardProps {
   file: File;
   isGrid: boolean;
@@ -121,6 +135,15 @@ export function FileCard({ file, isGrid }: FileCardProps) {
       console.error("Error toggling favorite status:", error);
     },
   });
+  const permaDeleteMutation = useMutation({
+    mutationFn: ({ fileId }: { fileId: string }) => permaDeleteFile(fileId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trashFiles"] });
+    },
+    onError: (error: unknown) => {
+      console.error("Error deleting file:", error);
+    },
+  });
 
   const getThumbnail = () => {
     const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg"];
@@ -161,6 +184,9 @@ export function FileCard({ file, isGrid }: FileCardProps) {
 
   const handleRestore = () => {
     restoreMutation.mutate(file.id);
+  };
+  const handlePermaDelete = () => {
+    permaDeleteMutation.mutate(file.id);
   };
   const isInTrash = pathname === "/trash";
 
@@ -229,21 +255,32 @@ export function FileCard({ file, isGrid }: FileCardProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {!isInTrash ? (
-                    <DropdownMenuItem
-                      onClick={handleDelete}
-                      className="text-destructive"
-                    >
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      <span>Delete</span>
-                    </DropdownMenuItem>
+                    <>
+                      <DropdownMenuItem
+                        onClick={handleDelete}
+                        className="text-destructive"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        <span>Delete</span>
+                      </DropdownMenuItem>
+                    </>
                   ) : (
-                    <DropdownMenuItem
-                      onClick={handleRestore}
-                      className="text-green-600"
-                    >
-                      <ArchiveRestoreIcon className="mr-2 h-4 w-4" />
-                      <span>Restore</span>
-                    </DropdownMenuItem>
+                    <>
+                      <DropdownMenuItem
+                        onClick={handleRestore}
+                        className="text-green-600"
+                      >
+                        <ArchiveRestoreIcon className="mr-2 h-4 w-4" />
+                        <span>Restore</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={permaDeleteFile}
+                        className="text-red-600"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        <span>Delete</span>
+                      </DropdownMenuItem>
+                    </>
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>
