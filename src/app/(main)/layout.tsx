@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import {
   SidebarProvider,
 } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function MainLayout({
   children,
@@ -23,6 +24,7 @@ export default function MainLayout({
         <main className=" flex-1 ">
           <Navbar />
           {children}
+          <Toaster/>
         </main>
       </SidebarProvider>
     </ThemeProvider>
