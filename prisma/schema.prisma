@@ -55,5 +55,7 @@ model FileShare {
   sharedWith   User     @relation(fields: [sharedWithId], references: [id])
   permissions  Permission @default(VIEW)
   sharedAt     DateTime @default(now())
+
+  @@unique([fileId, sharedWithId])
 }
 

@@ -61,3 +61,20 @@ export interface FileShare {
   sharedAt: string;    // Timestamp for when the file was shared
 }
 
+export interface SharedFile {
+  id: string;
+  fileId: string;
+  sharedWithId: string;
+  sharedAt: string;
+  permissions: "VIEW" | "EDIT"; // Match your `Permission` enum
+  file: {
+    id: string;
+    ownerId: string;
+    fileName: string;
+    filePath: string;
+    fileSize?: number;
+    uploadedAt: string;
+    isDeleted: boolean;
+    isFavorite: boolean;
+  };
+}

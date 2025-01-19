@@ -3,6 +3,7 @@ import * as React from "react";
 import {
   FileIcon,
   LayoutDashboardIcon,
+  ShareIcon,
   StarIcon,
   TrashIcon,
 } from "lucide-react"; // Importing the icons from lucide-react
@@ -53,6 +54,12 @@ const data = {
           url: "/favorites",
           icon: <StarIcon />, // Pass the actual icon component here
         },
+        {
+          title: "Share Files",
+          url: "/share",
+          icon: <ShareIcon/>, // Pass the actual icon component here
+        },
+ 
       ],
     },
   ],
