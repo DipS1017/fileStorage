@@ -11,11 +11,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuItem } from "./ui/dropdown-menu";
-import {
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
+import { DropdownMenu, DropdownMenuItem ,DropdownMenuContent,DropdownMenuTrigger} from "./ui/dropdown-menu";
 import { usePathname } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FileModal } from "@/components/FileModal";
@@ -272,6 +268,16 @@ export function FileCard({ file, isGrid }: FileCardProps) {
                       <DropdownMenuItem
                         onClick={(e) => {
                           e.stopPropagation();
+                          setIsShareModalOpen(true);
+                        }}
+                        className="text-blue-500"
+                      >
+                        <ShareIcon className="mr-2 h-4 w-4" />
+                        <span>Share</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
                           handleDelete();
                         }}
                         className="text-destructive"
@@ -280,16 +286,6 @@ export function FileCard({ file, isGrid }: FileCardProps) {
                         <span>Delete</span>
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete();
-                        }}
-                        className="text-blue-500"
-                      >
-                        <ShareIcon className="mr-2 h-4 w-4" />
-                        <span>Share</span>
-                      </DropdownMenuItem>
                     </>
                   ) : (
                     <>

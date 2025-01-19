@@ -1,17 +1,15 @@
 
-// components/ShareFileModal.tsx
-
 "use client"
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ShareFileModalProps } from "@/types";
 
-export function ShareFileModal({ fileId }: { fileId: string }) {
-  const [isOpen, setIsOpen] = useState(false);
+export function ShareFileModal({ isOpen, onClose, fileId }: ShareFileModalProps) {
   const [shareType, setShareType] = useState<"user" | "email">("user");
   const [selectedUser, setSelectedUser] = useState("");
   const [email, setEmail] = useState("");
@@ -41,7 +39,7 @@ export function ShareFileModal({ fileId }: { fileId: string }) {
       if (response.ok) {
         // Handle success, e.g., show success notification or close modal
         console.log("File shared:", result);
-        setIsOpen(false);
+        onClose(); // Close modal on success
       } else {
         // Handle error
         console.log("Error sharing file:", result.error);
@@ -52,9 +50,7 @@ export function ShareFileModal({ fileId }: { fileId: string }) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Share File</DialogTitle>
