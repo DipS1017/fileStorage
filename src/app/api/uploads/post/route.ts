@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import path from "path";
 import { writeFile } from "fs/promises";
-import prisma from '@/lib/prisma';
+import prisma from "@/lib/prisma";
 
 export const POST = async (req: Request) => {
   try {
@@ -37,6 +37,22 @@ export const POST = async (req: Request) => {
       const buffer = Buffer.from(await file.arrayBuffer());
       const originalFileName = file.name;
       const sanitizedFileName = originalFileName.replace(/\s+/g, "_");
+      // Check if the file with the same name already exists in the database for this user
+      const existingFile = await prisma.file.findFirst({
+        where: {
+          owner: {
+            clerkId: accountId,
+          },
+          fileName: sanitizedFileName,
+        },
+      });
+
+      if (existingFile) {
+        return NextResponse.json(
+          { error: `File "${originalFileName}" already exists.` },
+          { status: 409 }, // Conflict status code
+        );
+      }
       const uploadDirectory = path.join(process.cwd(), "public", "uploads");
       const uploadPath = path.join(uploadDirectory, sanitizedFileName);
 
@@ -45,14 +61,11 @@ export const POST = async (req: Request) => {
 
       // Generate a public URL for the uploaded file
       const fileUrl = `/uploads/${sanitizedFileName}`;
-      const user= await prisma.user.findUnique({
-          where:{clerkId:accountId},
-      })
-      if(!user){
-          return NextResponse.json(
-              { error: "User not found." },
-              { status: 404 },
-          );
+      const user = await prisma.user.findUnique({
+        where: { clerkId: accountId },
+      });
+      if (!user) {
+        return NextResponse.json({ error: "User not found." }, { status: 404 });
       }
 
       // Store metadata for each file
@@ -81,7 +94,7 @@ export const POST = async (req: Request) => {
     } catch (dbError) {
       console.log("Database error:", dbError.stack);
       return NextResponse.json(
-        { error: "Database error: " + dbError},
+        { error: "Database error: " + dbError },
         { status: 500 },
       );
     }
