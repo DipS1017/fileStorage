@@ -2,7 +2,13 @@
 
 import { File } from "@/types";
 import { formatDistanceToNow } from "date-fns";
-import { ArchiveRestoreIcon, MoreVertical, Star, Trash2 } from "lucide-react";
+import {
+  ShareIcon,
+  ArchiveRestoreIcon,
+  MoreVertical,
+  Star,
+  Trash2,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuItem } from "./ui/dropdown-menu";
@@ -15,6 +21,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FileModal } from "@/components/FileModal";
 import { formatFileSize } from "@/components/element/fileSize";
 import { useState } from "react";
+import { ShareFileModal } from "./ShareFileModal";
 // Helper function for deleting the file
 const deleteFile = async (fileId: string) => {
   const response = await fetch("/api/file/delete", {
@@ -85,6 +92,7 @@ interface FileCardProps {
 
 export function FileCard({ file, isGrid }: FileCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const pathname = usePathname();
   const fileExtension = file.fileName.split(".").pop()?.toLowerCase();
 
@@ -145,7 +153,7 @@ export function FileCard({ file, isGrid }: FileCardProps) {
     },
   });
 
-  const getThumbnail = (file:File) => {
+  const getThumbnail = (file: File) => {
     const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg"];
     if (imageExtensions.includes(fileExtension || "")) {
       return (
@@ -159,7 +167,7 @@ export function FileCard({ file, isGrid }: FileCardProps) {
     return null; // Return nothing if it's not an image
   };
 
-  const getFileIcon = (file:File) => {
+  const getFileIcon = (file: File) => {
     switch (fileExtension) {
       case "pdf":
         return "📄";
@@ -193,8 +201,9 @@ export function FileCard({ file, isGrid }: FileCardProps) {
   return (
     <>
       <Card
-        className={`hover:shadow-lg transition-shadow duration-300 ${isGrid ? "max-w-xs" : "w-full"
-          }`}
+        className={`hover:shadow-lg transition-shadow duration-300 ${
+          isGrid ? "max-w-xs" : "w-full"
+        }`}
         onClick={() => setIsModalOpen(true)}
       >
         <CardContent className="p-4">
@@ -223,10 +232,11 @@ export function FileCard({ file, isGrid }: FileCardProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className={`h-8 w-8 transition-colors duration-200 ${file.isFavorite
+                  className={`h-8 w-8 transition-colors duration-200 ${
+                    file.isFavorite
                       ? "text-yellow-500 hover:text-yellow-600"
                       : "text-muted-foreground hover:text-yellow-500"
-                    }`}
+                  }`}
                   aria-label={
                     file.isFavorite
                       ? "Remove from favorites"
@@ -269,6 +279,17 @@ export function FileCard({ file, isGrid }: FileCardProps) {
                         <Trash2 className="mr-2 h-4 w-4" />
                         <span>Delete</span>
                       </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete();
+                        }}
+                        className="text-blue-500"
+                      >
+                        <ShareIcon className="mr-2 h-4 w-4" />
+                        <span>Share</span>
+                      </DropdownMenuItem>
                     </>
                   ) : (
                     <>
@@ -277,7 +298,6 @@ export function FileCard({ file, isGrid }: FileCardProps) {
                           e.stopPropagation();
                           handleRestore();
                         }}
-
                         className="text-green-600"
                       >
                         <ArchiveRestoreIcon className="mr-2 h-4 w-4" />
@@ -306,6 +326,12 @@ export function FileCard({ file, isGrid }: FileCardProps) {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
+        <ShareFileModal
+        fileId={file.id}
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)} 
+      />
+
     </>
   );
 }

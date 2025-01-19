@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ShareIcon } from 'lucide-react';
 
 export function ShareFileModal({ fileId }: { fileId: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,9 +54,6 @@ export function ShareFileModal({ fileId }: { fileId: string }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <ShareIcon className="mr-2 h-4 w-4" /> Share File
-        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

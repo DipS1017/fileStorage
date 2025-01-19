@@ -3,15 +3,10 @@
 
 import React from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { File } from "@/types"
 import { formatDistanceToNow } from "date-fns"
 import { formatFileSize } from "@/components/element/fileSize"
+import { FileModalProps } from '@/types'
 
-interface FileModalProps {
-  file: File
-  isOpen: boolean
-  onClose: () => void
-}
 
 export function FileModal({ file, isOpen, onClose }: FileModalProps) {
   const fileExtension = file.fileName.split('.').pop()?.toLowerCase()

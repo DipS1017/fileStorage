@@ -78,3 +78,14 @@ export interface SharedFile {
     isFavorite: boolean;
   };
 }
+
+interface FileModalProps {
+  file: File
+  isOpen: boolean
+  onClose: () => void
+}
+interface ShareFileModalProps {
+  isOpen: boolean;
+  onClose: () => void;  // Ensure onClose is a function
+  fileId: string;  // Assuming you need a file ID for the sharing logic
+}
