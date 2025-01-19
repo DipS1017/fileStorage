@@ -22,7 +22,7 @@ const FavList= () => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["favfiles"], // Unique query key
     queryFn: fetchFiles, // Fetching function
-    staleTime: 5*1000,
+    staleTime: 30*1000,
   });
 
   // Loading state

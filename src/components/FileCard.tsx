@@ -80,7 +80,7 @@ const permaDeleteFile = async (fileId: string) => {
 };
 interface FileCardProps {
   file: File;
-  isGrid: boolean;
+  isGrid?: boolean;
 }
 
 export function FileCard({ file, isGrid }: FileCardProps) {
@@ -145,7 +145,7 @@ export function FileCard({ file, isGrid }: FileCardProps) {
     },
   });
 
-  const getThumbnail = () => {
+  const getThumbnail = (file:File) => {
     const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg"];
     if (imageExtensions.includes(fileExtension || "")) {
       return (
@@ -159,7 +159,7 @@ export function FileCard({ file, isGrid }: FileCardProps) {
     return null; // Return nothing if it's not an image
   };
 
-  const getFileIcon = () => {
+  const getFileIcon = (file:File) => {
     switch (fileExtension) {
       case "pdf":
         return "📄";

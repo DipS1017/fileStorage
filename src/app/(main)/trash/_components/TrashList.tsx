@@ -22,7 +22,7 @@ const TrashList = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["trashFiles"], // The query key
     queryFn: fetchTrashFiles, // The function to fetch the data
-    staleTime: 5 * 1000, 
+    staleTime: 30 * 1000, 
   });
 
   // Loading state

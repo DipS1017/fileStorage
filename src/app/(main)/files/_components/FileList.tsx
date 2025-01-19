@@ -20,7 +20,7 @@ const FileList = () => {
   const { data: files, isLoading, isError, error,} = useQuery<File[], Error>({
     queryKey: ["files"],
     queryFn: fetchFiles,
-    staleTime:5*1000,
+    staleTime:30*1000,
   });
 
   const isGrid = false; // Static state, can be replaced with props or dynamic logic
