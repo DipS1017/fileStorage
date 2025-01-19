@@ -1,4 +1,6 @@
 
+// components/ShareFileModal.tsx
+
 "use client"
 
 import React, { useState } from "react";
@@ -9,24 +11,52 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ShareIcon } from 'lucide-react';
 
-export function ShareFileModal() {
+export function ShareFileModal({ fileId }: { fileId: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [shareType, setShareType] = useState<"user" | "email">("user");
   const [selectedUser, setSelectedUser] = useState("");
   const [email, setEmail] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle the sharing logic here
-    console.log("Sharing with:", shareType === "user" ? selectedUser : email);
-    setIsOpen(false);
+
+    // Prepare the data to send
+    const data = {
+      shareType,
+      selectedUser: shareType === "user" ? selectedUser : null,
+      email: shareType === "email" ? email : null,
+      fileId,
+    };
+
+    try {
+      // Send data to the backend
+      const response = await fetch("/api/share/share-file", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        // Handle success, e.g., show success notification or close modal
+        console.log("File shared:", result);
+        setIsOpen(false);
+      } else {
+        // Handle error
+        console.log("Error sharing file:", result.error);
+      }
+    } catch (error) {
+      console.error("Error sharing file:", error);
+    }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button>
-          <ShareIcon className="mr-2 h-4 w-4" />Share File
+          <ShareIcon className="mr-2 h-4 w-4" /> Share File
         </Button>
       </DialogTrigger>
       <DialogContent>

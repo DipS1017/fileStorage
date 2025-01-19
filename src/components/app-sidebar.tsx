@@ -3,6 +3,7 @@ import * as React from "react";
 import {
   FileIcon,
   LayoutDashboardIcon,
+  Share2Icon,
   ShareIcon,
   StarIcon,
   TrashIcon,
@@ -57,7 +58,7 @@ const data = {
         {
           title: "Share Files",
           url: "/share",
-          icon: <ShareIcon/>, // Pass the actual icon component here
+          icon: <Share2Icon/>, // Pass the actual icon component here
         },
  
       ],

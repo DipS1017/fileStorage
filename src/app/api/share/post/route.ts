@@ -1,55 +1,67 @@
 
-import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
 
-export const POST = async (req: Request) => {
+import { NextApiRequest, NextApiResponse } from 'next';
+import prisma from '@/lib/prisma';  
+import { auth } from '@clerk/nextjs/server';  
+
+export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { fileId, sharedWithUserId, permission } = await req.json();
+    const { userId } = await auth();  // Get the current user's ID from Clerk
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
-    // Check if the file exists and the requester owns it
+    const { shareType, selectedUser, email, fileId } = req.body;
+
+    // Check for required fields
+    if (!fileId || (!selectedUser && !email)) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Fetch the file from the database to ensure it exists
     const file = await prisma.file.findUnique({
       where: { id: fileId },
     });
 
     if (!file) {
-      return NextResponse.json({ error: "File not found" }, { status: 404 });
+      return res.status(404).json({ error: "File not found" });
     }
 
-    // Verify the requester is the owner
-    if (file.ownerId !== req.headers.get("userId")) {
-      return NextResponse.json({ error: "You are not the owner of this file" }, { status: 403 });
+    let sharedWithId;
+
+    // If sharing with an existing user
+    if (shareType === "user" && selectedUser) {
+      // Check if the selected user exists
+      const user = await prisma.user.findUnique({
+        where: { id: selectedUser },
+      });
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      sharedWithId = user.id;
     }
 
-    // Check if the user being shared with exists
-    const sharedWithUser = await prisma.user.findUnique({
-      where: { id: sharedWithUserId },
-    });
-
-    if (!sharedWithUser) {
-      return NextResponse.json({ error: "User to share with not found" }, { status: 404 });
+    // If sharing via email
+    if (shareType === "email" && email) {
+      // Handle email sharing logic, e.g., send an email or store it
+      sharedWithId = email;
     }
 
-    // Create or update the FileShare entry
-    const fileShare = await prisma.fileShare.upsert({
-      where: {
-        fileId_sharedWithId: {
-          fileId,
-          sharedWithId: sharedWithUserId,
-        },
-      },
-      update: {
-        permissions: permission || "VIEW",
-      },
-      create: {
+    // Store the file sharing in the database
+    const fileShare = await prisma.fileShare.create({
+      data: {
         fileId,
-        sharedWithId: sharedWithUserId,
-        permissions: permission || "VIEW",
+        sharedWithId,
+        permissions: "VIEW", // Default permission
       },
     });
 
-    return NextResponse.json({ message: "File shared successfully", fileShare }, { status: 200 });
+    // Respond with success
+    return res.status(200).json({ message: "File shared successfully", fileShare });
   } catch (error) {
-    console.log("Error sharing file:", error.stack);
-    return NextResponse.json({ error: "Error sharing file" }, { status: 500 });
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
