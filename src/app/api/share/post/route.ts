@@ -1,67 +1,75 @@
 
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';  // Adjust the path to your prisma client
+import { auth } from '@clerk/nextjs/server';  // Ensure Clerk is set up correctly
 
-import { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '@/lib/prisma';  
-import { auth } from '@clerk/nextjs/server';  
-
-export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
+export async function POST(req: NextRequest) {
   try {
     const { userId } = await auth();  // Get the current user's ID from Clerk
     if (!userId) {
-      return res.status(401).json({ error: "Unauthorized" });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { shareType, selectedUser, email, fileId } = req.body;
+    const { shareType, selectedUser, email, fileId } = await req.json();
 
-    // Check for required fields
+    // Validate required fields
     if (!fileId || (!selectedUser && !email)) {
-      return res.status(400).json({ error: "Missing required fields" });
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // Fetch the file from the database to ensure it exists
+    // Fetch the file to ensure it exists
     const file = await prisma.file.findUnique({
       where: { id: fileId },
     });
 
     if (!file) {
-      return res.status(404).json({ error: "File not found" });
+      return NextResponse.json({ error: "File not found" }, { status: 404 });
     }
 
     let sharedWithId;
 
     // If sharing with an existing user
     if (shareType === "user" && selectedUser) {
-      // Check if the selected user exists
+      // Ensure the selected user exists in the database
       const user = await prisma.user.findUnique({
         where: { id: selectedUser },
       });
 
       if (!user) {
-        return res.status(404).json({ error: "User not found" });
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
       }
-      sharedWithId = user.id;
+
+      sharedWithId = user.id; // Store the user's ID
     }
 
-    // If sharing via email
+    // If sharing via email, search for the user by email
     if (shareType === "email" && email) {
-      // Handle email sharing logic, e.g., send an email or store it
-      sharedWithId = email;
+      // Find the user by email
+      const user = await prisma.user.findUnique({
+        where: { email: email },
+      });
+
+      if (!user) {
+        return NextResponse.json({ error: "User not found with the given email" }, { status: 404 });
+      }
+
+      sharedWithId = user.id; // Use the found user's ID
     }
 
-    // Store the file sharing in the database
+    // Store the sharing information in the database
     const fileShare = await prisma.fileShare.create({
       data: {
         fileId,
         sharedWithId,
-        permissions: "VIEW", // Default permission
+        permissions: "VIEW", // Default permission is "VIEW"
       },
     });
 
     // Respond with success
-    return res.status(200).json({ message: "File shared successfully", fileShare });
+    return NextResponse.json({ message: "File shared successfully", fileShare }, { status: 200 });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    console.error(error.stack);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
-};
+}
 

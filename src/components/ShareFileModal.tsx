@@ -1,5 +1,5 @@
 
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -8,11 +8,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ShareFileModalProps } from "@/types";
+import { useMutation } from "@tanstack/react-query";
+
+// Helper function for sharing the file
+const shareFile = async (data: {  selectedUser: string | null, email: string | null, fileId: string }) => {
+  const response = await fetch("/api/share/post", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error sharing file");
+  }
+
+  return response.json(); // Return response body for further handling
+};
 
 export function ShareFileModal({ isOpen, onClose, fileId }: ShareFileModalProps) {
   const [shareType, setShareType] = useState<"user" | "email">("user");
   const [selectedUser, setSelectedUser] = useState("");
   const [email, setEmail] = useState("");
+
+  // Setup the mutation for sharing the file
+  const { mutate,isPending,  isError, error } = useMutation({
+    mutationFn: shareFile,
+    onSuccess: (result) => {
+      console.log("File shared:", result);
+      onClose(); // Close modal on success
+    },
+    onError: (error) => {
+      console.error("Error sharing file:", error);
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,28 +55,8 @@ export function ShareFileModal({ isOpen, onClose, fileId }: ShareFileModalProps)
       fileId,
     };
 
-    try {
-      // Send data to the backend
-      const response = await fetch("/api/share/share-file", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        // Handle success, e.g., show success notification or close modal
-        console.log("File shared:", result);
-        onClose(); // Close modal on success
-      } else {
-        // Handle error
-        console.log("Error sharing file:", result.error);
-      }
-    } catch (error) {
-      console.error("Error sharing file:", error);
-    }
+    // Trigger the mutation
+    mutate(data);
   };
 
   return (
@@ -97,9 +107,14 @@ export function ShareFileModal({ isOpen, onClose, fileId }: ShareFileModalProps)
               />
             </div>
           )}
-          <Button type="submit" className="w-full">
-            Share
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending? "Sharing..." : "Share"}
           </Button>
+          {isError && (
+            <div className="text-red-500 mt-2">
+              {error instanceof Error ? error.message : "An error occurred"}
+            </div>
+          )}
         </form>
       </DialogContent>
     </Dialog>
